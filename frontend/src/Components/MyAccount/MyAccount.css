@@ -1,0 +1,127 @@
+.myaccount {
+    width: 100%;
+    color: black;
+}
+
+.myaccount-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0px;
+    width: 100%;
+    font-size: 3rem;
+    font-weight: bold;
+    color: black;
+}
+
+.myaccount-container {
+    width: 100%;
+    margin-bottom: 50px;
+    color: black;
+}
+
+.myaccount-tile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 10px var(--blue-bg-color);
+}
+
+.myaccounts-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    width: 100%;
+    font-size: 1.2rem;
+}
+
+.myaccount-info-container {
+    width: 90%;
+    height: 100%;
+    text-align: left;
+}
+
+.myaccount-balance{
+    display: flex;
+}
+
+.myaccount-balance-display{
+    padding: 0px 5px;
+}
+
+.balance-toggle-btn{
+    cursor: pointer;
+    border: 1px solid black;
+    padding: 2px;
+    border-radius: 5px;
+}
+
+.myaccount-delete-btn-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 10%;
+    height: 100%;
+    /* border: 1px solid blue; */
+}
+.myaccount-delete-btn {
+    color: white;
+    font-size: 2.5rem;
+    border: none;
+    cursor: pointer;
+    color: black;
+    background-color: white;
+}
+.myaccount-delete-btn:hover{
+    color: var(--blue-bg-color);
+}
+
+.create-account-link{
+    border: 1px solid white;
+    background-color: black;
+    text-decoration: none;
+    color: White;
+    padding: 10px;
+    border-radius:10px ;
+    margin: 20px;
+}
+
+.create-account-link:hover{
+    background-color: var(--blue-bg-color);
+    border: none;
+}
+
+.delete-success{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 600px;
+    height: 50px;
+    background-color: rgb(52, 189, 52);
+    color: white;
+    font-size: 1.5rem;
+}
+.delete-fail{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 600px;
+    height: 50px;
+    background-color: rgb(192, 62, 62);
+    color: white;
+    font-size: 1.5rem;
+}

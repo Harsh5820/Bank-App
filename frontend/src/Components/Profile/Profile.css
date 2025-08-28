@@ -1,0 +1,85 @@
+.profile-page {
+    width: 100%;
+    height: 100%;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 20px 0px;
+    color: black;
+}
+
+.profile-info-container {
+  position: relative;
+  display: flex;
+  border-radius: 20px;
+  padding: 15px;
+  margin: 50px;
+  z-index: 1;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0px 0px 20px var(--blue-bg-color);
+}
+
+/* .profile-info-container::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  border: none;
+  background: conic-gradient(
+    var(--blue-bg-color) 0deg,
+    rgba(0, 255, 255, 0.8) 360deg
+  );
+  filter: blur(50px); 
+  animation: rotateGlow 5s linear infinite;
+  z-index: -1;
+} */
+
+/* @keyframes rotateGlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} */
+
+
+
+.profile-img-container {
+    width: 30%;
+    border-radius: 10px;
+}
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.profile-info-detail-container {
+    width: 70%;
+    padding-left: 20px;
+    background-color: white;
+    color: black;
+    font-weight: bold;
+}
+
+.profile-info-name,
+.profile-info-email,
+.profile-info-cid,
+.profile-info-phonenumber,
+.profile-info-dob {
+    font-size: 1.1rem;
+    padding: 5px;
+    height: 20%;
+    color: black;
+}

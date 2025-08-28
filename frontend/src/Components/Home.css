@@ -1,0 +1,117 @@
+.home {
+    width: 100%;
+    height: 100%;
+}
+
+.home-hero {
+    position: relative;
+    z-index: 10;
+    height: 400px;
+    width: 100%;
+}
+
+.home-hero-banner-container {
+    position: absolute;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    overflow: hidden;
+    white-space: nowrap;
+
+
+}
+
+.home-hero-banner-container img{
+    min-width: 100%;
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+    transition: transform 0.8s ease-in-out;
+}
+
+.home-welcome {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 200px;
+    font-weight: bolder;
+    font-size: 4rem;
+    color: black;
+}
+
+.home-user-name {
+    font-style: italic;
+    /* background: linear-gradient(270deg, var(--blue-bg-color), #eef0ef);
+    background-size: 800% 800%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientMove 3s ease infinite; */
+}
+
+/* @keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+} */
+
+.home-hero-desc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    font-size: 2rem;
+    font-style: italic;
+}
+
+.home-create-section {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+    /* background-color: black; */
+}
+
+.home-card {
+    flex: 1;
+    padding: 30px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.5rem;
+    color: black;
+    border-radius: 12px;
+    cursor: pointer;
+    background: linear-gradient(270deg, #3333ff, #00ffcc, rgb(136, 136, 153));
+    background-size: 800% 800%;
+    animation: animatedBackground 6s ease infinite;
+    transition: transform 0.3s ease;
+}
+
+.home-card:hover {
+    transform: scale(1.05);
+}
+
+@keyframes animatedBackground {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
