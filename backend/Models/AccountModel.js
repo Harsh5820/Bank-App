@@ -24,6 +24,12 @@ const accountSchema = mongoose.Schema(
       enum: ["Savings", "Current"],
       required: true,
     },
+
+    accountPriority: {
+      type: String,
+      enum: ["Primary", "Secondary"],
+      default: "Secondary",
+    },
     createdBy: {
       type: mongoose.Types.ObjectId,
     },

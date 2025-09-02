@@ -7,8 +7,8 @@ import { IoMdClose } from "react-icons/io";
 const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isManager, setIsManager] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
-  // console.log("id from navbar", user?._id)
 
   const handleLogOut = () => {
     if (isLoggedIn) {
@@ -19,29 +19,32 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
   };
 
   useEffect(() => {
+    if (user?.userRole === "Manager") {
+      setIsManager(true);
+    }
     const token = localStorage.getItem("token");
     setIsLoggedIn?.(!!token);
   }, [location, setIsLoggedIn]);
 
   return (
     <div className="navbar">
-      <div className="navbar-profile">
-        <button
-          className="navbar-prf-btn"
-          onMouseOver={() => setIsMenuOpen(true)}
-        >
-          <GiHamburgerMenu />
-        </button>
-      </div>
+      <button
+        className="navbar-prf-btn"
+        onMouseOver={() => setIsMenuOpen(true)}
+      >
+        <GiHamburgerMenu />
+      </button>
 
-      <div className="navbar-title-container">
-        <Link to="/" className="navbar-title">
-          HD Bank
+      <Link to="/" className="navbar-title">
+        HD Bank
+      </Link>
+      <div>
+        <Link className="navbar-rewards-btn" to="/reward">Rewards section</Link>
+
+        <Link to="/login" onClick={handleLogOut} className="btn-login">
+          {isLoggedIn ? "Log Out" : "Log In"}
         </Link>
       </div>
-      <Link to="/login" onClick={handleLogOut} className="btn-login">
-        {isLoggedIn ? "Log Out" : "Log In"}
-      </Link>
 
       <div className={`side-menu ${isMenuOpen ? "open" : ""}`}>
         <button className="close-btn" onClick={() => setIsMenuOpen(false)}>
@@ -71,6 +74,21 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
               My Profile
             </Link>
           </li>
+          {isManager ? (
+            <li>
+              <Link
+                to={`/pendingapprovals`}
+                className="list-item"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                }}
+              >
+                Pending Approvals
+              </Link>
+            </li>
+          ) : (
+            ""
+          )}
           <li>
             <Link
               to="/myaccount"

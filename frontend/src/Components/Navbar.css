@@ -2,51 +2,48 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0px 20px;
-}
-
-.navbar-profile {
-    color: black;
+    width: 100%;
 }
 
 .navbar-prf-btn {
     font-size: 2rem;
-    color: var(--blue-bg-color);
+    color: black;
     background-color: white;
     border: none;
     cursor: pointer;
+    margin-left: 10px;
 }
 
-
-.navbar-title-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.navbar-prf-btn:hover {
+    color: var(--blue-bg-color);
 }
 
 .navbar-title {
     font-size: 2.5rem;
-    margin: 5px;
     font-weight: bold;
     text-decoration: none;
     color: var(--blue-bg-color);
 }
 
-.btn-login {
+
+
+.btn-login,
+.navbar-rewards-btn {
     text-decoration: none;
     font-weight: bold;
     font-size: 1.5rem;
-    /* background-color: black; */
     color: black;
     border-radius: 10px;
     padding: 2px 8px;
+    margin-right: 10px;
     border: 1px solid black;
 }
 
-.btn-login:hover {
+.btn-login:hover,
+.navbar-rewards-btn:hover {
     background-color: var(--blue-bg-color);
     color: white;
-    border: none;
+    border: 1px solid var(--blue-bg-color);
 }
 
 /* side menu */
@@ -91,7 +88,7 @@
     background: rgba(255, 255, 255, 0.6);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(8px);  
+    backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.3);
 }

@@ -30,7 +30,7 @@ const CreateAccount = () => {
       }, 3000);
 
       setTimeout(() => {
-        Navigate("/");
+        Navigate("/myaccount");
       }, 1500);
     } catch (error) {
       setCurrentError(error.response.data.error);

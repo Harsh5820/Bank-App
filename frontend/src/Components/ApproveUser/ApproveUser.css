@@ -1,0 +1,64 @@
+.approve-user-page {
+    width: 100%;
+}
+
+.approve-user-header {
+    width: 100%;
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.approve-user-user-info-container {
+    width: 100%;
+}
+
+.user-info-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 5px;
+}
+
+.user-info-desc {
+    color: grey;
+}
+
+.approve-user-header2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 10px 0px;
+}
+
+.approve-user-label {
+    font-weight: bold;
+}
+
+.approve-user-select {
+    border: 1px solid black;
+    padding: 2px;
+    margin: 0px 5px;
+}
+
+.approve-user-btn {
+    cursor: pointer;
+    width: 100px;
+    height: 30px;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: black;
+    background-color: white;
+    font-size: 1rem;
+    padding: 5px;
+    margin: 5px 10px;
+    font-weight: bold;
+}
+
+.approve-user-btn:hover {
+    background-color: var(--blue-bg-color);
+    border: none;
+    color: white;
+}
+
+.approve-user-error{
+    color: red;
+    margin: 10px 0px;
+}

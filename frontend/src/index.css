@@ -4,8 +4,13 @@
   box-sizing: border-box;
   /* background-color: black; */
 }
+.df{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-z input::-webkit-outer-spin-button,
+input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
@@ -14,7 +19,8 @@ input::-webkit-inner-spin-button {
 
 :root {
   /* --blue-bg-color: rgb(39, 126, 138); */
-  --blue-bg-color: #3333ff;
+  /* --blue-bg-color: #3333ff; */
+  --blue-bg-color: #0078ad;
 }
 
 

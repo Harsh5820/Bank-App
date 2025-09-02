@@ -23,6 +23,15 @@ const userSchema = mongoose.Schema(
     userDob: {
       type: Date,
     },
+    userRole:{
+      type:String,
+      enum:["Manager", "Account Holder", "Pending"],
+      default:"Pending"
+    },
+    userStatus: {
+      type:String,
+      enum:["Pending", "Approved", "Rejected"]
+    }
   },
   { timestamps: true }
 );

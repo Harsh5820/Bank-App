@@ -8,14 +8,21 @@ const Home = () => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   const [bannerArray, setBannerArray] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedRandomUrl, setSelectedRandomUrl] = useState("");
 
   const getAllbanners = async () => {
     try {
       const response = await axios.get(
         "http://localhost:5001/banner/allbanners"
       );
-      setBannerArray(response.data.allBanners);
+      const allBanners = response?.data?.allBanners || [];
+      setBannerArray(allBanners);
+
+      // Immediately pick a random banner on fetch
+      if (allBanners.length > 0) {
+        const randomIndex = Math.floor(Math.random() * allBanners.length);
+        setSelectedRandomUrl(allBanners[randomIndex].bannerUrl);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -33,25 +40,38 @@ const Home = () => {
         }
       );
     } catch (error) {
-      console.log("error  in creating account", error);
+      console.log("error in creating account", error);
     }
+  };
+
+  const selectRandomUrl = () => {
+    if (bannerArray.length === 0) return;
+    const randomIndex = Math.floor(Math.random() * bannerArray.length);
+    setSelectedRandomUrl(bannerArray[randomIndex].bannerUrl);
   };
 
   useEffect(() => {
     getAllbanners();
 
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) =>
-        bannerArray.length > 0 ? (prevIndex + 1) % bannerArray.length : 0
-      );
-    }, 5000);
+    // Set interval for rotating banners
+    const intervalId = setInterval(() => {
+      selectRandomUrl();
+    }, 3000);
 
-    
-
+    // Initialize account check
     const init = async () => {
       try {
         const response = await axios.get(
           "http://localhost:5001/account/myaccounts",
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+
+        const response2 = await axios.get(
+          "http://localhost:5001/reward/myrewardcoinaccount",
           {
             headers: {
               Authorization: token,
@@ -68,18 +88,15 @@ const Home = () => {
     };
     init();
 
-    return () => clearInterval(interval);
-  }, []);
-
-
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []); // ✅ dependency array prevents multiple intervals
 
   return (
     <div className="home">
       <div className="home-hero">
-        <div className="home-hero-banner-container" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-          {bannerArray?.map?.((item, index) => (
-            <img key={index} src={item.bannerUrl} alt={item.bannerAlt} />
-          ))}
+        <div className="home-hero-banner-container">
+          {selectedRandomUrl && <img src={selectedRandomUrl} alt="banner" />}
         </div>
         <div className="home-welcome">
           <span> WELCOME -</span>
@@ -94,8 +111,8 @@ const Home = () => {
         <div className="home-card" onClick={() => Navigate("/pay")}>
           Pay
         </div>
-        <div className="home-card">Appply for Debit Card</div>
-        <div className="home-card">Appply for Credit Card</div>
+        <div className="home-card">Apply for Debit Card</div>
+        <div className="home-card">Apply for Credit Card</div>
       </div>
     </div>
   );

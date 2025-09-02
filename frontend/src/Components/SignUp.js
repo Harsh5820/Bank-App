@@ -50,10 +50,10 @@ const SignUp = () => {
       userEmail?.trim() &&
       userPhoneNumber?.toString().trim() &&
       userDob?.trim() &&
-      password?.trim() &&
-      confirmPassword?.trim();
+      userPassword?.trim() &&
+      userConfirmPassword?.trim();
 
-    const passwordsMatch = password === confirmPassword;
+    const passwordsMatch = userPassword === userConfirmPassword;
 
     setFormValid(allFieldsFilled && passwordsMatch);
     setMatchPassword(password !== "" && password === confirmPassword);
@@ -103,14 +103,6 @@ const SignUp = () => {
             Date of Birth:
           </label>
           <br />
-          {/* <input
-            type="date"
-            name="userDob"
-            id="userDob"
-            className="signup-input"
-            onChange={handleOnchange}
-            onFocus={(e) => e.target.showPicker?.()}
-          /> */}
           <input
             type="text"
             placeholder="DD/MM/YYYY"

@@ -18,20 +18,15 @@ const newBanner = async (req, res) => {
   }
 };
 
-const getAllBanners = async (req,res) => {
+const getAllBanners = async (req, res) => {
   try {
     const allBanners = await Banner.find();
-    const number = Math.floor(Math.random() * (allBanners.length + 1));
-    // console.log(number);
-    // console.log(allBanners);
-    const randomUrl = allBanners[number]?.bannerUrl;
+    const randomBannerUrlArray = allBanners.map((banner) => banner.bannerUrl);
 
-    // console.log("😁😁😁",randomUrl);
-
-    return res.status(200).json({allBanners});
+    return res.status(200).json({ allBanners, randomBannerUrlArray });
   } catch (error) {
     return res.status(400).json({ error: "Error fetching all the banners" });
   }
 };
 
-module.exports = { newBanner,getAllBanners };
+module.exports = { newBanner, getAllBanners };

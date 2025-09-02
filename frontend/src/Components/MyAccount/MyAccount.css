@@ -45,22 +45,42 @@
     text-align: left;
 }
 
-.myaccount-balance{
+.myaccount-balance {
     display: flex;
 }
 
-.myaccount-balance-display{
+.myaccount-balance-display {
     padding: 0px 5px;
 }
 
-.balance-toggle-btn{
+.balance-toggle-btn {
     cursor: pointer;
     border: 1px solid black;
     padding: 2px;
     border-radius: 5px;
 }
 
-.myaccount-delete-btn-container{
+.myaccount-primary-section{
+    font-style: italic;
+}
+.myaccount-primary-btn {
+    background-color: white;
+    border: 1px solid black;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 2px 8px;
+    margin: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.myaccount-primary-btn:hover {
+    background-color: var(--blue-bg-color);
+    color: white;
+    border: 1px solid var(--blue-bg-color);
+}
+
+.myaccount-delete-btn-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -68,6 +88,7 @@
     height: 100%;
     /* border: 1px solid blue; */
 }
+
 .myaccount-delete-btn {
     color: white;
     font-size: 2.5rem;
@@ -76,26 +97,27 @@
     color: black;
     background-color: white;
 }
-.myaccount-delete-btn:hover{
+
+.myaccount-delete-btn:hover {
     color: var(--blue-bg-color);
 }
 
-.create-account-link{
+.create-account-link {
     border: 1px solid white;
     background-color: black;
     text-decoration: none;
     color: White;
     padding: 10px;
-    border-radius:10px ;
+    border-radius: 10px;
     margin: 20px;
 }
 
-.create-account-link:hover{
+.create-account-link:hover {
     background-color: var(--blue-bg-color);
     border: none;
 }
 
-.delete-success{
+.delete-success {
     position: fixed;
     bottom: 0;
     right: 0;
@@ -110,7 +132,8 @@
     color: white;
     font-size: 1.5rem;
 }
-.delete-fail{
+
+.delete-fail {
     position: fixed;
     bottom: 0;
     right: 0;

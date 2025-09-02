@@ -27,6 +27,23 @@ const MyAccount = () => {
     }
   };
 
+  const setAccountPrimary = async (id) => {
+    try {
+      await axios.post(
+        `http://localhost:5001/account/setaccountprimary/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleDeleteAccount = async (id) => {
     try {
       const confirmDelete = window.confirm(
@@ -48,7 +65,7 @@ const MyAccount = () => {
     } catch (error) {
       // console.log("error from delete", error.response.data.error);
       setMinDelete(error.response.data.error);
-        setTimeout(() => {
+      setTimeout(() => {
         setMinDelete("");
       }, 3000);
     }
@@ -78,10 +95,25 @@ const MyAccount = () => {
                   <span className="myaccount-balance-display">
                     {toggleBalanceDisplay ? item.accountBalance : ""}
                   </span>
-                  <div className="balance-toggle-btn" onClick={()=> setToggleBalanceDisplay((prev)=>!prev)}>
+                  <div
+                    className="balance-toggle-btn"
+                    onClick={() => setToggleBalanceDisplay((prev) => !prev)}
+                  >
                     {/* {toggleBalanceDisplay ? <FaEyeSlash /> : <FaEye />} */}
                     {toggleBalanceDisplay ? "Hide Balance" : "Show Balance"}
                   </div>
+                </div>
+                <div className="myaccount-primary-section">
+                  {item.accountPriority === "Primary" ? (
+                    "Primary Account ✅"
+                  ) : (
+                    <button
+                      className="myaccount-primary-btn"
+                      onClick={() => setAccountPrimary(item._id)}
+                    >
+                      Set as Primary
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="myaccount-delete-btn-container">
@@ -97,7 +129,9 @@ const MyAccount = () => {
         )}
       </div>
 
-        <Link to="/createaccount" className="create-account-link">Create Account</Link>
+      <Link to="/createaccount" className="create-account-link">
+        Create Account
+      </Link>
 
       {successMessage && <div className="delete-success">{successMessage}</div>}
       {minDelete && <div className="delete-fail">{minDelete}</div>}

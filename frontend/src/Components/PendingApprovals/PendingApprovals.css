@@ -1,0 +1,39 @@
+.pending-approval{
+    width: 100%;
+    height: 100%;
+}
+.pending-approvals-header{
+    text-align: center;
+    width: 100%;
+    font-size: 3rem;
+}
+
+.pending-approval-empty{
+    width: 100%;
+    font-style: italic;
+    height: 200px;
+}
+
+.pending-approvals-tile-container{
+    width: 100%;
+}
+.pending-approvals-tile{
+    display: flex;
+    height: 50px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    box-shadow: 0px 0px 10px var(--blue-bg-color);
+    margin: 10px 20px;
+    padding: 0px 20px;
+    border-radius: 10px;
+    justify-content: space-between;
+}
+
+.pending-approvals-userstatus{
+    color: red;
+}
+
+.pending-approvals-link{
+    color: black;
+    
+}

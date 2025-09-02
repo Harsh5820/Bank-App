@@ -20,8 +20,6 @@
     z-index: -1;
     overflow: hidden;
     white-space: nowrap;
-
-
 }
 
 .home-hero-banner-container img{
@@ -29,7 +27,6 @@
     height: 100%;
     object-fit: cover;
     flex-shrink: 0;
-    transition: transform 0.8s ease-in-out;
 }
 
 .home-welcome {
@@ -92,7 +89,8 @@
     color: black;
     border-radius: 12px;
     cursor: pointer;
-    background: linear-gradient(270deg, #3333ff, #00ffcc, rgb(136, 136, 153));
+    /* background: linear-gradient(270deg, #3333ff, #00ffcc, rgb(136, 136, 153)); */
+    background: linear-gradient(270deg, #e5f1f7, #89dcff, #67c3ef, #0078ad);
     background-size: 800% 800%;
     animation: animatedBackground 6s ease infinite;
     transition: transform 0.3s ease;

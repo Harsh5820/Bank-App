@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Profile.css";
 import axios from "axios";
+import { MdDelete } from "react-icons/md";
 
 const Profile = () => {
-  const { userId } = useParams();
   const token = localStorage.getItem("token");
   const [userDataArray, setUserdataArray] = useState([]);
+  const Navigate = useNavigate();
 
   const fetchUser = async () => {
     try {
@@ -16,6 +17,33 @@ const Profile = () => {
         },
       });
       setUserdataArray(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleAccountAndUserDelete = async () => {
+    try {
+      const confirmDelete = window.confirm(
+        "This will delete the user Profile and all the accounts linked to this profile. Do you want to proceed?"
+      );
+      if (!confirmDelete) return;
+      await axios.delete("http://localhost:5001/user/deleteuser", {
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      await axios.delete("http://localhost:5001/account/deleteaccountbyuser", {
+        headers: {
+          Authorization: token,
+        },
+      });
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      setTimeout(() => {
+        Navigate("/login");
+      }, 2000);
     } catch (error) {
       console.log(error);
     }
@@ -53,7 +81,18 @@ const Profile = () => {
             DOB: {new Date(userDataArray.userDob).toLocaleDateString("en-GB")}
           </div>
         </div>
+        <div className="profile-delete-btn-container df">
+          <button
+            className="profile-delete-btn"
+            onClick={handleAccountAndUserDelete}
+          >
+            <MdDelete />
+          </button>
+        </div>
       </div>
+      <Link to={`/edituser/${userDataArray._id}`} className="profile-edit-btn">
+        Edit Profile
+      </Link>
     </div>
   );
 };

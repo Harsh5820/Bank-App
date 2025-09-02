@@ -1,12 +1,14 @@
 const Transaction = require("../Models/TransactionModel");
 const Account = require("../Models/AccountModel");
-const User = require("../Models/userModel");
+const RewardCoinAccount = require("../Models/RewardCoinAccountModel");
 
 const newTransaction = async (req, res) => {
   const userID = req.user?._id;
   const { senderAccountNumber, recieverAccountNumber, transactionAmount } =
     req.body;
-  // console.log("reciver account number", recieverAccountNumber.length());
+  const userRewardAccount = await RewardCoinAccount.findOne({
+    createdBy: userID,
+  });
 
   try {
     if (!senderAccountNumber || !recieverAccountNumber || !transactionAmount) {
@@ -50,16 +52,20 @@ const newTransaction = async (req, res) => {
       recieverAccountNumber,
       transactionAmount,
       senderName,
-      recieverName
+      recieverName,
     });
+
+    const rewardCoinAmount = Math.round(transactionAmount * 0.1); //always a whole number (nearest integer)
 
     senderAccount.accountBalance -= transactionAmount;
     reciverAccount.accountBalance += transactionAmount;
+    userRewardAccount.coinBalance += rewardCoinAmount;
 
     await senderAccount.save();
     await reciverAccount.save();
+    await userRewardAccount.save();
 
-    res.status(200).json({newTransaction,senderName, recieverName});
+    res.status(200).json({ newTransaction, senderName, recieverName });
   } catch (error) {
     console.log(error);
     return res.status(400).json(error);
@@ -94,11 +100,10 @@ const myTransactions = async (req, res) => {
       recieverAccountNumber: accountId,
     });
 
-    res
+    return res
       .status(200)
       .json({ allTransactions, allTransactionsSent, allTransactionsRecieved });
   } catch (error) {
-    console.error("Error fetching user transactions:", error);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
