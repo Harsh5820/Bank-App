@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./Components/Home";
-import Navbar from "./Components/Navbar";
-import Login from "./Components/Login";
+import Home from "./Components/Home/Home.js";
+import Navbar from "./Components/Navbar/Navbar.js";
+import Login from "./Components/Login/Login.js";
 import { useState } from "react";
-import SignUp from "./Components/SignUp";
+import SignUp from "./Components/SignUp/SignUp.js";
 import Footer from "./Components/Footer/Footer";
 import Profile from "./Components/Profile/Profile";
 import MyAccount from "./Components/MyAccount/MyAccount";
@@ -13,17 +13,25 @@ import CreateAccount from "./Components/CreateAccount/CreateAccount";
 import PendingApprovals from "./Components/PendingApprovals/PendingApprovals";
 import ApproveUser from "./Components/ApproveUser/ApproveUser";
 import EditProfile from "./Components/EditProfile/EditProfile";
-import RewardPage from "./RewardPage/RewardPage";
+import RewardPage from "./Components/RewardPage/RewardPage.js";
+import BeneficiaryPage from "./Components/BeneficiaryPage/BeneficiaryPage.js";
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(
     () => !!localStorage.getItem("token")
   );
+
   // const user = JSON.parse(localStorage.getItem("user"));
 
   return (
     <>
       <Router>
-        <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        {window.location.pathname === "/login" ||
+        window.location.pathname === "/signup" ? (
+          <div className="navbar-login">HD Bank</div> //css in index.css
+        ) : (
+          <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        )}
         <Routes>
           <Route
             path="/"
@@ -46,7 +54,11 @@ function App() {
           <Route
             path={isLoggedIn ? `/edituser/:userId` : "/login"}
             element={
-              isLoggedIn ? <EditProfile /> : <Login setIsLoggedIn={setIsLoggedIn} />
+              isLoggedIn ? (
+                <EditProfile />
+              ) : (
+                <Login setIsLoggedIn={setIsLoggedIn} />
+              )
             }
           />
           <Route
@@ -76,27 +88,49 @@ function App() {
             }
           />
           <Route
+            path="/beneficiarypage"
+            element={
+              isLoggedIn ? <BeneficiaryPage /> : <Login setIsLoggedIn={setIsLoggedIn} />
+            }
+          />
+          <Route
             path="/mytransactions"
             element={
-              isLoggedIn ? <MyTransactions /> : <Login setIsLoggedIn={setIsLoggedIn} />
+              isLoggedIn ? (
+                <MyTransactions />
+              ) : (
+                <Login setIsLoggedIn={setIsLoggedIn} />
+              )
             }
           />
           <Route
             path="/createaccount"
             element={
-              isLoggedIn ? <CreateAccount /> : <Login setIsLoggedIn={setIsLoggedIn} />
+              isLoggedIn ? (
+                <CreateAccount />
+              ) : (
+                <Login setIsLoggedIn={setIsLoggedIn} />
+              )
             }
           />
           <Route
             path="/pendingapprovals"
             element={
-              isLoggedIn ? <PendingApprovals/> : <Login setIsLoggedIn={setIsLoggedIn} />
+              isLoggedIn ? (
+                <PendingApprovals />
+              ) : (
+                <Login setIsLoggedIn={setIsLoggedIn} />
+              )
             }
           />
           <Route
             path="/approveuser/:id"
             element={
-              isLoggedIn ? <ApproveUser/> : <Login setIsLoggedIn={setIsLoggedIn} />
+              isLoggedIn ? (
+                <ApproveUser />
+              ) : (
+                <Login setIsLoggedIn={setIsLoggedIn} />
+              )
             }
           />
         </Routes>

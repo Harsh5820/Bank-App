@@ -76,7 +76,7 @@ const userSignUp = async (req, res) => {
 
     const token = await jwt.sign(
       { _id: newUser._id, userEmail },
-      process.env.SECRET_KEY
+      process.env.SECRET_KEY,{expiresIn: "60m"}
     );
 
     return res.status(200).json({ user: newUser, token });
@@ -118,7 +118,7 @@ const userLogin = async (req, res) => {
     }
     const token = await jwt.sign(
       { _id: user._id, userEmail, userRole: user.userRole },
-      process.env.SECRET_KEY
+      process.env.SECRET_KEY,{expiresIn: "60m"}
     );
 
     res.status(200).json({ token, user });

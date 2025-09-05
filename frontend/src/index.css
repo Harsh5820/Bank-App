@@ -1,8 +1,13 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Sansita+Swashed:wght@300..900&family=Sen:wght@400..800&display=swap'); */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   /* background-color: black; */
+   /* font-family: "Sen", sans-serif; */
+   font-family: 'Times New Roman', Times, serif;
+   
 }
 .df{
   display: flex;
@@ -26,4 +31,18 @@ input::-webkit-inner-spin-button {
 
 .profile-page{
   color: white;
+}
+
+.navbar-login{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--blue-bg-color);
+}
+
+.mand-span{
+  color: red;
+  font-size: 1.2rem;
 }

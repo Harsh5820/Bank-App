@@ -12,6 +12,11 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
 
   const handleLogOut = () => {
     if (isLoggedIn) {
+      const confirmLogout = window.confirm("Do you wish to log Out ?");
+      if (!confirmLogout) {
+        return;
+      }
+
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       setIsLoggedIn(false);
@@ -24,29 +29,36 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
     }
     const token = localStorage.getItem("token");
     setIsLoggedIn?.(!!token);
-  }, [location, setIsLoggedIn]);
+  }, [location, setIsLoggedIn, user?.userRole]);
 
   return (
     <div className="navbar">
-      <button
-        className="navbar-prf-btn"
-        onMouseOver={() => setIsMenuOpen(true)}
-      >
-        <GiHamburgerMenu />
-      </button>
-
-      <Link to="/" className="navbar-title">
-        HD Bank
-      </Link>
       <div>
-        <Link className="navbar-rewards-btn" to="/reward">Rewards section</Link>
+        <button
+          className="navbar-prf-btn "
+          onMouseOver={() => setIsMenuOpen(true)}
+        >
+          <GiHamburgerMenu />
+        </button>
+
+        <Link to="/" className="navbar-title">
+          HD Bank
+        </Link>
+      </div>
+      <div>
+        <Link className="navbar-rewards-btn" to="/reward">
+          Rewards section
+        </Link>
 
         <Link to="/login" onClick={handleLogOut} className="btn-login">
           {isLoggedIn ? "Log Out" : "Log In"}
         </Link>
       </div>
 
-      <div className={`side-menu ${isMenuOpen ? "open" : ""}`}>
+      <div
+        className={`side-menu ${isMenuOpen ? "open" : ""}`}
+        onMouseLeave={() => setIsMenuOpen(false)}
+      >
         <button className="close-btn" onClick={() => setIsMenuOpen(false)}>
           <IoMdClose />
         </button>
@@ -102,6 +114,17 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
           </li>
           <li>
             <Link
+              to="/pay"
+              className="list-item"
+              onClick={() => {
+                setIsMenuOpen(false);
+              }}
+            >
+              Pay
+            </Link>
+          </li>
+          <li>
+            <Link
               to="/mytransactions"
               className="list-item"
               onClick={() => {
@@ -109,6 +132,17 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
               }}
             >
               My Transactions
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/beneficiarypage"
+              className="list-item"
+              onClick={() => {
+                setIsMenuOpen(false);
+              }}
+            >
+              My Beneficiaries
             </Link>
           </li>
           <li>

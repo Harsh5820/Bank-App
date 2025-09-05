@@ -1,0 +1,181 @@
+/* .beneficiary-page {
+    height: 100vh;
+} */
+
+.benificiary-page-header {
+    width: 100%;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 20px 0px;
+}
+
+.add-beneficiary-btn {
+    cursor: pointer;
+    background-color: white;
+    /* font-weight: bold; */
+    font-size: 1.1rem;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 2px 8px;
+    margin-left: 20px;
+
+}
+
+.add-beneficiary-btn:hover {
+    color: white;
+    border: 1px solid var(--blue-bg-color);
+    background-color: var(--blue-bg-color);
+}
+
+.add-beneficiary-modal-container {
+    position: fixed;
+    /* fixed so it covers whole viewport */
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    /* Blur + dark overlay */
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-beneficiary-modal {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    min-width: 400px;
+    max-width: 600px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+
+}
+
+.add-beneficiary-form-conatainer {
+    width: 100%;
+    height: 100%;
+}
+
+.add-benefciary-close-btn {
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    margin: 10px 0px 10px 0px;
+}
+
+.add-benefciary-close-btn:hover {
+    color: var(--blue-bg-color);
+    transform: scale(1.1);
+}
+
+.add-beneficary-form-title {
+    font-weight: bold;
+    font-size: 1.5rem;
+    width: 100%;
+    text-align: center;
+    margin: 10px 0px 20px 0px;
+}
+
+.add-bebeficiary-label {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin: 5px 10px;
+}
+
+.add-beneficiary-input {
+    border: 1px solid black;
+    font-size: 1.1rem;
+    padding: 2px 8px;
+    margin: 5px 10px;
+}
+
+.add-beneficiary-submit-btn {
+    cursor: pointer;
+    background-color: white;
+    /* font-weight: bold; */
+    font-size: 1.1rem;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 2px 8px;
+    margin: 10px;
+}
+
+.add-beneficiary-submit-btn:hover {
+    color: white;
+    border: 1px solid var(--blue-bg-color);
+    background-color: var(--blue-bg-color);
+
+}
+
+.beneficiary-tile-container {
+    width: 100%;
+}
+
+.empty-beneficiary {
+    font-size: 1.2rem;
+    font-style: italic;
+    margin: 20px;
+    /* color: gray; */
+}
+
+.beneficiary-tile {
+    margin: 20px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px var(--blue-bg-color);
+    font-size: 1.3rem;
+    padding: 0px 10px;
+}
+
+.beneficary-name,
+.beneficiary-accountnumber,
+.beneficiary-status,
+.beneficiary-btn-container {
+    width: 25%;
+    margin: 15px 0px;
+    font-weight: bold;
+}
+
+.beneficiary-pay-btn,
+.beneficiary-edit-btn,
+.beneficiary-delete-btn {
+    cursor: pointer;
+    background-color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 2px 8px;
+    margin-left: 20px;
+}
+
+.ben-red-btn{
+    color: red;
+}
+
+.ben-green-btn{
+    color: green;
+}
+
+.beneficiary-pay-btn:hover,
+.beneficiary-edit-btn:hover,
+.beneficiary-delete-btn:hover {
+    color: white;
+    border: 1px solid var(--blue-bg-color);
+    background-color: var(--blue-bg-color);
+}
+
+.beneficiary-pay-btn:disabled,
+.beneficiary-edit-btn:disabled,
+.beneficiary-delete-btn:disabled{
+    cursor: no-drop;
+}

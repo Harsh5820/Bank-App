@@ -119,6 +119,7 @@
 
 .delete-success {
     position: fixed;
+    z-index: 100;
     bottom: 0;
     right: 0;
     margin-bottom: 10px;

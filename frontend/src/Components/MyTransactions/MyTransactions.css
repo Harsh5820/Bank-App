@@ -33,6 +33,12 @@
     font-weight: bold;
 }
 
+.mytransaction-filter{
+    font-size: 2rem;
+    margin: 20px;
+    
+}
+
 .mytransaction-tile {
     display: flex;
     margin: 25px 10px;

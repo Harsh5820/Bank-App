@@ -1,6 +1,7 @@
 .navbar {
     display: flex;
     justify-content: space-between;
+    /* justify-content: center; */
     align-items: center;
     width: 100%;
 }
@@ -19,10 +20,12 @@
 }
 
 .navbar-title {
+    height: 100%;
     font-size: 2.5rem;
     font-weight: bold;
     text-decoration: none;
     color: var(--blue-bg-color);
+    margin-left: 10px;
 }
 
 

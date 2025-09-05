@@ -19,6 +19,7 @@ app.use("/account", require("./Routes/accountRoutes")); //All the account routes
 app.use("/transaction", require("./Routes/transactionRoutes")); //All the transactions will be handeld here
 app.use("/banner", require("./Routes/bannerRoutes")) // All the banners will be handled from here
 app.use("/reward", require("./Routes/RewardCoinAccountRoutes"))//All the rewardcoinaccount will be handled from here
+app.use("/beneficiary", require("./Routes/BeneficiaryRoutes")) //All the beneficiary Routes will be handled from here
 
 connectDb()
   .then(() => {

@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import "./MyTransactions.css";
 import axios from "axios";
 import { FaArrowRight } from "react-icons/fa6";
+import { FaFilter } from "react-icons/fa";
 
 const MyTransactions = () => {
   const [accountsArray, setAccountsArray] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState();
   const [currenttransactionArray, setCurrenttransactionArray] = useState([]);
-  // const [selectedAccountBalance, setSelectedAccountBalance] = useState();
   const token = localStorage.getItem("token");
 
   const fetchAccounts = async () => {
@@ -89,6 +89,13 @@ const MyTransactions = () => {
           <div className="empty-mytransactions">No transactions yet!!!</div>
         ) : (
           <div className="mytransctions-container">
+            <div className="mytransaction-filter">
+              <FaFilter />: <select name="" id="" className="transaction-filter-select">
+                    <option value="" className="transaction-filter-option" defaultChecked>All Transactions</option>
+                    <option value="allTransactionsSent" className="transaction-filter-option" defaultChecked>All Transactions Sent</option>
+                    <option value="" className="transaction-filter-option" defaultChecked>All Transactions Recieved</option>
+                  </select>
+            </div>
             {currenttransactionArray?.map?.((item, index) => (
               <div className="mytransaction-tile" key={index}>
                 <div className="mytransaction-sender-details">
@@ -106,9 +113,9 @@ const MyTransactions = () => {
                   <div className="reciever-accountnumber">
                     {item.recieverAccountNumber}
                   </div>
-                <div className="mytransaction-reciever-name">
-                  {item.recieverName}
-                </div>
+                  <div className="mytransaction-reciever-name">
+                    {item.recieverName}
+                  </div>
                 </div>
                 <div className="mytransaction-colon">:</div>
                 <div

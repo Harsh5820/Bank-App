@@ -3,8 +3,8 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    color: black;
+    color: rgb(77, 75, 75);
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1rem;
     /* background-color: black; */
 }
