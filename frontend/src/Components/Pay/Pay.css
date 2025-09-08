@@ -74,7 +74,7 @@
 
 .payment-btn:hover {
     background-color: var(--blue-bg-color);
-    border: none;
+    border: 1px solid var(--blue-bg-color);
     color: white;
 }
 

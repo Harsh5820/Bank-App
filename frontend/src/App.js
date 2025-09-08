@@ -15,6 +15,7 @@ import ApproveUser from "./Components/ApproveUser/ApproveUser";
 import EditProfile from "./Components/EditProfile/EditProfile";
 import RewardPage from "./Components/RewardPage/RewardPage.js";
 import BeneficiaryPage from "./Components/BeneficiaryPage/BeneficiaryPage.js";
+import NotificationsPage from "./Components/NotificationsPage/NotificationsPage.js";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -66,6 +67,16 @@ function App() {
             element={
               isLoggedIn ? (
                 <MyAccount />
+              ) : (
+                <Login setIsLoggedIn={setIsLoggedIn} />
+              )
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              isLoggedIn ? (
+                <NotificationsPage />
               ) : (
                 <Login setIsLoggedIn={setIsLoggedIn} />
               )

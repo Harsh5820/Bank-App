@@ -4,6 +4,7 @@
     /* justify-content: center; */
     align-items: center;
     width: 100%;
+    
 }
 
 .navbar-prf-btn {
@@ -28,6 +29,15 @@
     margin-left: 10px;
 }
 
+.home-notification-link {
+    color: black;
+    font-size: 1.6rem;
+    margin: 10px;
+}
+
+.home-notification-link:hover {
+    color: var(--blue-bg-color);
+}
 
 
 .btn-login,

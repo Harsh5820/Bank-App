@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdClose } from "react-icons/io";
+import { IoNotificationsSharp } from "react-icons/io5";
 
 const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
   const location = useLocation();
@@ -46,6 +47,10 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
         </Link>
       </div>
       <div>
+        <Link  to="/notifications" className="home-notification-link ">
+          <IoNotificationsSharp />
+        </Link>
+
         <Link className="navbar-rewards-btn" to="/reward">
           Rewards section
         </Link>

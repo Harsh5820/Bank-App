@@ -1,9 +1,12 @@
 const express = require("express");
 const connectDb = require("./Config/ConnectDb");
-const app = express();
 const dotenv = require("dotenv").config();
-const PORT = process.env.PORT || 5000;
 const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
+
+const app = express();
+const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
@@ -11,22 +14,54 @@ app.use(
     credentials: true,
   })
 );
-
 app.use(express.json());
 
-app.use("/user", require("./Routes/userRoutes")); //All the user routes will be handled here
-app.use("/account", require("./Routes/accountRoutes")); //All the account routes will be handled here
-app.use("/transaction", require("./Routes/transactionRoutes")); //All the transactions will be handeld here
-app.use("/banner", require("./Routes/bannerRoutes")) // All the banners will be handled from here
-app.use("/reward", require("./Routes/RewardCoinAccountRoutes"))//All the rewardcoinaccount will be handled from here
-app.use("/beneficiary", require("./Routes/BeneficiaryRoutes")) //All the beneficiary Routes will be handled from here
+app.use("/user", require("./Routes/userRoutes"));
+app.use("/account", require("./Routes/accountRoutes"));
+app.use("/transaction", require("./Routes/transactionRoutes"));
+app.use("/banner", require("./Routes/bannerRoutes"));
+app.use("/reward", require("./Routes/RewardCoinAccountRoutes"));
+app.use("/beneficiary", require("./Routes/BeneficiaryRoutes"));
+app.use("/notifications", require("./Routes/NotificationRoutes"));
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "DELETE","PUT"],
+    credentials: true,
+  },
+});
+
+let onlineUsers = {};
+
+io.on("connection", (socket) => {
+  console.log("🔗 New client connected:", socket.id);
+  socket.on("registerUser", (userId) => {
+    onlineUsers[userId] = socket.id;
+    console.log(`✅ User ${userId} registered with socket ${socket.id}`);
+  });
+
+  socket.on("disconnect", () => {
+    Object.keys(onlineUsers).forEach((userId) => {
+      if (onlineUsers[userId] === socket.id) {
+        delete onlineUsers[userId];
+        console.log(`❌ User ${userId} disconnected`);
+      }
+    });
+  });
+});
+
+app.set("io", io);
+app.set("onlineUsers", onlineUsers);
 
 connectDb()
   .then(() => {
-    app.listen(PORT, (err) => {
-      console.log("The app is running on port: ", PORT);
+    server.listen(PORT, () => {
+      console.log("🚀 Server running on port:", PORT);
     });
   })
   .catch((error) => {
-    console.log("The app is running on port: ", error);
+    console.error("❌ DB connection failed:", error);
   });

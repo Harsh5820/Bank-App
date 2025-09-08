@@ -8,7 +8,11 @@ const MyTransactions = () => {
   const [accountsArray, setAccountsArray] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState();
   const [currenttransactionArray, setCurrenttransactionArray] = useState([]);
+  const [transactionResponseData, setTransactionResposneData] = useState([]);
+  const [currentError, setCurrentError] = useState("");
   const token = localStorage.getItem("token");
+  const [filter, setFilter] = useState("allTransactions");
+  const [sort, setSort] = useState("");
 
   const fetchAccounts = async () => {
     try {
@@ -23,6 +27,11 @@ const MyTransactions = () => {
       setAccountsArray(response.data);
     } catch (error) {
       console.log(error);
+      setCurrentError(error?.response?.data?.error);
+
+      setTimeout(() => {
+        setCurrentError("");
+      }, 1500);
     }
   };
 
@@ -37,10 +46,44 @@ const MyTransactions = () => {
           },
         }
       );
-      setCurrenttransactionArray(response.data.allTransactions);
+      setCurrenttransactionArray(response?.data?.allTransactions);
+      setTransactionResposneData(response?.data);
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleFilter = (e) => {
+    const selectedFilter = e.target.value;
+    setFilter(selectedFilter);
+
+    // update transactions based on filter
+    setCurrenttransactionArray(transactionResponseData[selectedFilter] || []);
+  };
+
+  const handleSort = (e) => {
+    const selectedSort = e.target.value;
+    setSort(selectedSort);
+
+    let sortedArray = [...currenttransactionArray];
+
+    if (selectedSort === "date-desc") {
+      sortedArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (selectedSort === "date-asc") {
+      sortedArray.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    } else if (selectedSort === "amount-desc") {
+      sortedArray.sort((a, b) => b.transactionAmount - a.transactionAmount);
+    } else if (selectedSort === "amount-asc") {
+      sortedArray.sort((a, b) => a.transactionAmount - b.transactionAmount);
+    }
+
+    setCurrenttransactionArray(sortedArray);
+  };
+
+  const handleClearAllFilter = () => {
+    setFilter("allTransactions");
+    setSort("");
+    setCurrenttransactionArray(transactionResponseData.allTransactions || []);
   };
 
   useEffect(() => {
@@ -76,6 +119,7 @@ const MyTransactions = () => {
               </option>
             ))}
           </select>
+          <div className="pay-error">{currentError}</div>
           <div className="pay-btn-container">
             <button type="submit" className="payment-btn">
               Fetch
@@ -90,11 +134,59 @@ const MyTransactions = () => {
         ) : (
           <div className="mytransctions-container">
             <div className="mytransaction-filter">
-              <FaFilter />: <select name="" id="" className="transaction-filter-select">
-                    <option value="" className="transaction-filter-option" defaultChecked>All Transactions</option>
-                    <option value="allTransactionsSent" className="transaction-filter-option" defaultChecked>All Transactions Sent</option>
-                    <option value="" className="transaction-filter-option" defaultChecked>All Transactions Recieved</option>
+              <div className="mytransaction-filter-select-container">
+                <FaFilter />
+                &nbsp;: &nbsp;
+                <select
+                  name=""
+                  id="filter-select"
+                  className="transaction-filter-select"
+                  value={filter}
+                  onChange={handleFilter}
+                >
+                  <option
+                    value="allTransactions"
+                    className="transaction-filter-option"
+                    defaultChecked
+                  >
+                    All Transactions
+                  </option>
+                  <option
+                    value="allTransactionsSent"
+                    className="transaction-filter-option"
+                  >
+                    All Transactions Sent
+                  </option>
+                  <option
+                    value="allTransactionsRecieved"
+                    className="transaction-filter-option"
+                  >
+                    All Transactions Recieved
+                  </option>
+                </select>
+                &nbsp; &nbsp;
+                <div className="mytransaction-sort">
+                  <select
+                    name=""
+                    id="sort-select"
+                    className="transaction-filter-select"
+                    value={sort}
+                    onChange={handleSort}
+                  >
+                    <option value="">Sort</option>
+                    <option value="date-desc">Date: Latest First</option>
+                    <option value="date-asc">Date: Oldest First</option>
+                    <option value="amount-desc">Amount: Largest First</option>
+                    <option value="amount-asc">Amount: Smallest First</option>
                   </select>
+                </div>
+              </div>
+              <button
+                className="mytransaction-remove-all-filters"
+                onClick={handleClearAllFilter}
+              >
+                Remove All Filters
+              </button>
             </div>
             {currenttransactionArray?.map?.((item, index) => (
               <div className="mytransaction-tile" key={index}>

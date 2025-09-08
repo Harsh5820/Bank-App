@@ -34,16 +34,45 @@
 }
 
 .mytransaction-filter{
-    font-size: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
     margin: 20px;
-    
 }
 
+.mytransaction-filter-select-container{
+    display: flex;
+}
+
+.transaction-filter-select{
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.mytransaction-remove-all-filters{
+    color: white;
+    cursor: pointer;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: black;
+    background-color: white;
+    font-size: 1rem;
+    padding: 5px;
+    margin: 10px;
+    font-weight: bold;
+}
+
+.mytransaction-remove-all-filters:hover{
+    background-color: var(--blue-bg-color);
+    border: 1px solid var(--blue-bg-color);
+    color: white;
+}
 .mytransaction-tile {
     display: flex;
     margin: 25px 10px;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px var(--blue-bg-color);
+    box-shadow: 0px 0px 7px var(--blue-bg-color);
 }
 
 .mytransaction-sender-details,

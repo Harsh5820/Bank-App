@@ -1,16 +1,17 @@
 const Transaction = require("../Models/TransactionModel");
 const Account = require("../Models/AccountModel");
 const RewardCoinAccount = require("../Models/RewardCoinAccountModel");
+const Notifications = require("../Models/NotificationModel");
+const User = require("../Models/userModel");
+const createAndEmitNotification = require("../Utils/helper");
 
 const newTransaction = async (req, res) => {
   const userID = req.user?._id;
   const { senderAccountNumber, recieverAccountNumber, transactionAmount } =
     req.body;
-  const userRewardAccount = await RewardCoinAccount.findOne({
-    createdBy: userID,
-  });
 
   try {
+    // ✅ Basic validations
     if (!senderAccountNumber || !recieverAccountNumber || !transactionAmount) {
       return res.status(400).json({ error: "All fields are mandatory !!" });
     }
@@ -20,34 +21,45 @@ const newTransaction = async (req, res) => {
         .status(400)
         .json({ error: "Account number should be 9 digits only" });
     }
-    const recieverCheck = await Account.findOne({
+
+    const amountNum = Number(transactionAmount);
+    if (!Number.isFinite(amountNum) || amountNum <= 0) {
+      return res
+        .status(400)
+        .json({ error: "Transaction amount should be more than 0" });
+    }
+
+    // ✅ Accounts
+    const senderAccount = await Account.findOne({
+      accountNumber: senderAccountNumber,
+    });
+    if (!senderAccount) {
+      return res.status(400).json({ error: "Sender account not found" });
+    }
+
+    const reciverAccount = await Account.findOne({
       accountNumber: recieverAccountNumber,
     });
-    if (!recieverCheck) {
+    if (!reciverAccount) {
       return res
         .status(400)
         .json({ error: "Reciever account number is incorrect" });
     }
 
-    const senderAccount = await Account.findOne({
-      accountNumber: senderAccountNumber,
-    });
-
-    const senderName = senderAccount.holderName;
-    const reciverAccount = await Account.findOne({
-      accountNumber: recieverAccountNumber,
-    });
-    const recieverName = reciverAccount.holderName;
-    if (transactionAmount <= 0) {
-      return res
-        .status(400)
-        .json({ error: "Transaction amount should be more than 0" });
-    }
-    const senderAccountBalance = senderAccount?.accountBalance;
-    if (transactionAmount > senderAccountBalance) {
+    // ✅ Balances
+    if (amountNum > senderAccount.accountBalance) {
       return res.status(400).json({ error: "Insufficient Funds!!" });
     }
-    const newTransaction = await Transaction.create({
+
+    const senderName = senderAccount.holderName;
+    const recieverName = reciverAccount.holderName;
+
+    // (optional) reward account may not exist for all users, guard it
+    const userRewardAccount = await RewardCoinAccount.findOne({
+      createdBy: userID,
+    }).catch(() => null);
+
+    const tx = await Transaction.create({
       senderAccountNumber,
       recieverAccountNumber,
       transactionAmount,
@@ -55,20 +67,44 @@ const newTransaction = async (req, res) => {
       recieverName,
     });
 
-    const rewardCoinAmount = Math.round(transactionAmount * 0.1); //always a whole number (nearest integer)
+    // balances + reward save...
+    await Promise.all([
+      senderAccount.save(),
+      reciverAccount.save(),
+      userRewardAccount?.save?.(),
+    ]);
 
-    senderAccount.accountBalance -= transactionAmount;
-    reciverAccount.accountBalance += transactionAmount;
-    userRewardAccount.coinBalance += rewardCoinAmount;
+    // ✅ Notifications (generalised)
+    const io = req.app.get("io");
+    const onlineUsers = req.app.get("onlineUsers");
 
-    await senderAccount.save();
-    await reciverAccount.save();
-    await userRewardAccount.save();
+    // For sender
+    const senderNote = await createAndEmitNotification({
+      io,
+      onlineUsers,
+      userId: userID,
+      type: "transaction",
+      message: `₹${transactionAmount} sent to ${recieverName} (${recieverAccountNumber})`,
+      meta: { transactionId: tx._id, direction: "debit" },
+    });
 
-    res.status(200).json({ newTransaction, senderName, recieverName });
+    // For receiver
+    const receiverNote = await createAndEmitNotification({
+      io,
+      onlineUsers,
+      userId: reciverAccount.createdBy,
+      type: "transaction",
+      message: `₹${transactionAmount} received from ${senderName} (${senderAccountNumber})`,
+      meta: { transactionId: tx._id, direction: "credit" },
+    });
+
+    res.status(200).json({
+      transaction: tx,
+      notifications: { sender: senderNote, receiver: receiverNote },
+    });
   } catch (error) {
-    console.log(error);
-    return res.status(400).json(error);
+    console.error("newTransaction error:", error);
+    return res.status(500).json({ error: "Transaction failed" });
   }
 };
 
