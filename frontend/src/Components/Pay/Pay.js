@@ -9,7 +9,7 @@ const Pay = () => {
   const [currentError, setCurrentError] = useState("");
   const [accountsArray, setAccountsArray] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
-  const [transactionData, setTransactionData] = useState([]);
+  const [transactionData, setTransactionData] = useState({});
 
   const fetchAccounts = async () => {
     try {
@@ -47,11 +47,9 @@ const Pay = () => {
         }
       );
       setSuccessMessage("Payment Successful !!!");
-
       setTimeout(() => {
         setSuccessMessage("");
       }, 3000);
-
       setTimeout(() => {
         Navigate("/");
       }, 1500);
@@ -122,8 +120,7 @@ const Pay = () => {
         </form>
         <div className="pay-error">{currentError}</div>
       </div>
-      {successMessage && <div className="delete-success">{successMessage}</div>}{" "}
-      {/* css from MyAccount.js */}
+      {successMessage && <div className="delete-success">{successMessage}</div>}
     </div>
   );
 };

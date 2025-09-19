@@ -28,22 +28,6 @@ const Home = () => {
     }
   };
 
-  const createAccount = async () => {
-    try {
-      await axios.post(
-        "http://localhost:5001/account/createaccount",
-        { accountType: "Savings" },
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-    } catch (error) {
-      console.log("error in creating account", error);
-    }
-  };
-
   const selectRandomUrl = () => {
     if (bannerArray.length === 0) return;
     const randomIndex = Math.floor(Math.random() * bannerArray.length);
@@ -53,44 +37,12 @@ const Home = () => {
   useEffect(() => {
     getAllbanners();
 
-    // Set interval for rotating banners
     const intervalId = setInterval(() => {
       selectRandomUrl();
     }, 3000);
 
-    // Initialize account check
-    const init = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:5001/account/myaccounts",
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
-
-        const response2 = await axios.get(
-          "http://localhost:5001/reward/myrewardcoinaccount",
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
-
-        if (response.data.length === 0) {
-          await createAccount();
-        }
-      } catch (error) {
-        console.error("Error during initialization:", error);
-      }
-    };
-    init();
-
-    // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
-  }, []); // ✅ dependency array prevents multiple intervals
+  }, []);
 
   return (
     <div className="home">

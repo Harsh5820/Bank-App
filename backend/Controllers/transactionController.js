@@ -3,144 +3,153 @@ const Account = require("../Models/AccountModel");
 const RewardCoinAccount = require("../Models/RewardCoinAccountModel");
 const Notifications = require("../Models/NotificationModel");
 const User = require("../Models/userModel");
-const createAndEmitNotification = require("../Utils/helper");
+const mongoose = require("mongoose");
 
 const newTransaction = async (req, res) => {
   const userID = req.user?._id;
-  const { senderAccountNumber, recieverAccountNumber, transactionAmount } =
+  let { senderAccountNumber, recieverAccountNumber, transactionAmount } =
     req.body;
 
+  transactionAmount = Number(transactionAmount);
+
+  if (!senderAccountNumber || !recieverAccountNumber || !transactionAmount) {
+    return res.status(400).json({ error: "All fields are mandatory" });
+  }
+  if (recieverAccountNumber.toString().length !== 9) {
+    return res.status(400).json({ error: "Receiver account must be 9 digits" });
+  }
+  if (transactionAmount <= 0) {
+    return res.status(400).json({ error: "Transaction amount must be > 0" });
+  }
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    // ✅ Basic validations
-    if (!senderAccountNumber || !recieverAccountNumber || !transactionAmount) {
-      return res.status(400).json({ error: "All fields are mandatory !!" });
-    }
-
-    if (recieverAccountNumber.toString().length !== 9) {
-      return res
-        .status(400)
-        .json({ error: "Account number should be 9 digits only" });
-    }
-
-    const amountNum = Number(transactionAmount);
-    if (!Number.isFinite(amountNum) || amountNum <= 0) {
-      return res
-        .status(400)
-        .json({ error: "Transaction amount should be more than 0" });
-    }
-
-    // ✅ Accounts
     const senderAccount = await Account.findOne({
       accountNumber: senderAccountNumber,
-    });
-    if (!senderAccount) {
-      return res.status(400).json({ error: "Sender account not found" });
-    }
-
-    const reciverAccount = await Account.findOne({
-      accountNumber: recieverAccountNumber,
-    });
-    if (!reciverAccount) {
-      return res
-        .status(400)
-        .json({ error: "Reciever account number is incorrect" });
-    }
-
-    // ✅ Balances
-    if (amountNum > senderAccount.accountBalance) {
-      return res.status(400).json({ error: "Insufficient Funds!!" });
-    }
-
-    const senderName = senderAccount.holderName;
-    const recieverName = reciverAccount.holderName;
-
-    // (optional) reward account may not exist for all users, guard it
-    const userRewardAccount = await RewardCoinAccount.findOne({
       createdBy: userID,
-    }).catch(() => null);
+    }).session(session);
 
-    const tx = await Transaction.create({
-      senderAccountNumber,
-      recieverAccountNumber,
-      transactionAmount,
-      senderName,
-      recieverName,
-    });
+    if (!senderAccount) {
+      throw new Error("Sender account not found or unauthorized");
+    }
 
-    // balances + reward save...
+    const receiverAccount = await Account.findOne({
+      accountNumber: recieverAccountNumber,
+    }).session(session);
+
+    if (!receiverAccount) {
+      throw new Error("Receiver account not found");
+    }
+
+    if (transactionAmount > senderAccount.accountBalance) {
+      throw new Error("Insufficient funds");
+    }
+
+    senderAccount.accountBalance -= transactionAmount;
+    receiverAccount.accountBalance += transactionAmount;
+
+    const userRewardAccount = await RewardCoinAccount.findOneAndUpdate(
+      { createdBy: userID },
+      { $inc: { coinBalance: transactionAmount * 0.1 } },
+      { new: true, upsert: true, session }
+    );
+
+    const newTxn = await Transaction.create(
+      [
+        {
+          senderAccountNumber,
+          recieverAccountNumber,
+          transactionAmount,
+          senderName: senderAccount.holderName,
+          recieverName: receiverAccount.holderName,
+        },
+      ],
+      { session }
+    );
+
     await Promise.all([
-      senderAccount.save(),
-      reciverAccount.save(),
-      userRewardAccount?.save?.(),
+      senderAccount.save({ session }),
+      receiverAccount.save({ session }),
     ]);
 
-    // ✅ Notifications (generalised)
-    const io = req.app.get("io");
-    const onlineUsers = req.app.get("onlineUsers");
+    await Notifications.insertMany(
+      [
+        {
+          userId: userID,
+          notificationType: "transaction",
+          notificationTitle: "Transaction Alert",
+          notificationMessage: `You sent ₹${transactionAmount} to ${receiverAccount.holderName}`,
+        },
+        {
+          userId: receiverAccount.createdBy,
+          notificationType: "transaction",
+          notificationTitle: "Transaction Alert",
+          notificationMessage: `You received ₹${transactionAmount} from ${senderAccount.holderName}`,
+        },
+      ],
+      { session }
+    );
 
-    // For sender
-    const senderNote = await createAndEmitNotification({
-      io,
-      onlineUsers,
-      userId: userID,
-      type: "transaction",
-      message: `₹${transactionAmount} sent to ${recieverName} (${recieverAccountNumber})`,
-      meta: { transactionId: tx._id, direction: "debit" },
-    });
+    await session.commitTransaction();
+    session.endSession();
 
-    // For receiver
-    const receiverNote = await createAndEmitNotification({
-      io,
-      onlineUsers,
-      userId: reciverAccount.createdBy,
-      type: "transaction",
-      message: `₹${transactionAmount} received from ${senderName} (${senderAccountNumber})`,
-      meta: { transactionId: tx._id, direction: "credit" },
-    });
-
-    res.status(200).json({
-      transaction: tx,
-      notifications: { sender: senderNote, receiver: receiverNote },
-    });
+    res.status(200).json(newTxn[0]);
   } catch (error) {
-    console.error("newTransaction error:", error);
-    return res.status(500).json({ error: "Transaction failed" });
+    await session.abortTransaction();
+    session.endSession();
+    console.error("newTransaction error:", error.message);
+    return res
+      .status(400)
+      .json({ error: error.message || "Transaction failed" });
   }
 };
 
 const myTransactions = async (req, res) => {
-  const accountId = req.params.id; //account number sent from the fontend as Id
+  const accountNumberToFetch = req.params.id;
+  const userId = req.user._id;
+
   try {
-    const loggedInUserEmail = req.user?.userEmail;
-    if (!loggedInUserEmail) {
-      return res.status(401).json({ error: "Unauthorized access" });
+    // ✅ Ensure the account belongs to the logged-in user
+    const loggedInUserAccount = await Account.findOne({
+      accountNumber: accountNumberToFetch,
+      createdBy:userId
+    });
+  
+
+    if (!loggedInUserAccount) {
+      return res.status(403).json({
+        error: "You do not have access to this account",
+      });
     }
 
-    const loggedInUserAccount = await Account.findOne({
-      accountNumber: accountId,
-    });
-    if (!loggedInUserAccount) {
-      return res.status(404).json({ error: "Account not found for user" });
-    }
+    // ✅ Fetch all transactions for this account
     const allTransactions = await Transaction.find({
       $or: [
-        { senderAccountNumber: accountId },
-        { recieverAccountNumber: accountId },
+        { senderAccountNumber: accountNumberToFetch },
+        { recieverAccountNumber: accountNumberToFetch },
       ],
-    }).sort({ createdAt: -1 }); //sort by newest first
+    }).sort({ createdAt: -1 });
 
-    const allTransactionsSent = await Transaction.find({
-      senderAccountNumber: accountId,
-    });
-    const allTransactionsRecieved = await Transaction.find({
-      recieverAccountNumber: accountId,
-    });
+    // ✅ Directly query sent & received transactions separately
+    const [allTransactionsSent, allTransactionsRecieved] = await Promise.all([
+      Transaction.find({ senderAccountNumber: accountNumberToFetch }).sort({
+        createdAt: -1,
+      }),
+      Transaction.find({ recieverAccountNumber: accountNumberToFetch }).sort({
+        createdAt: -1,
+      }),
+    ]);
 
-    return res
-      .status(200)
-      .json({ allTransactions, allTransactionsSent, allTransactionsRecieved });
+    return res.status(200).json({
+      allTransactions,
+      allTransactionsSent,
+      allTransactionsRecieved,
+    });
   } catch (error) {
-    res.status(500).json({ error: "Something went wrong" });
+    console.error("myTransactions error:", error.message);
+    return res.status(500).json({ error: "Something went wrong" });
   }
 };
 

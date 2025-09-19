@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Account = require("../Models/AccountModel");
 const User = require("../Models/userModel");
 
@@ -42,17 +43,45 @@ const createAccount = async (req, res) => {
 };
 
 const myAccounts = async (req, res) => {
-  const loggedInUserEmail = req.user?.userEmail;
+  const userId = req.user?._id;
 
   try {
-    const myAccounts = await Account.find({ accountEmail: loggedInUserEmail });
-
-    // If no accounts found
-    if (myAccounts.length === 0) {
-      return res.status(404).json({ error: "No accounts found!" });
+    const loggedInUser = await User.findById(userId);
+    if (!loggedInUser) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    // If only one account exists, make it Primary
+    let myAccounts = await Account.find({ createdBy: userId });
+
+    // If no accounts, create one
+    if (!myAccounts.length) {
+      let isUnique = false;
+      let newAccountNumber;
+
+      while (!isUnique) {
+        newAccountNumber = Math.floor(100000000 + Math.random() * 900000000); // 9 digits
+        const existingAccount = await Account.findOne({
+          accountNumber: newAccountNumber,
+        });
+        if (!existingAccount) {
+          isUnique = true;
+        }
+      }
+
+      const newAccount = await Account.create({
+        accountNumber: newAccountNumber,
+        holderName: loggedInUser.userName,
+        accountEmail: loggedInUser.userEmail,
+        phoneNumber: loggedInUser.userPhoneNumber,
+        accountType: req.body?.accountType || "Savings", // FIXED
+        accountPriority: "Secondary",
+        createdBy: new mongoose.Types.ObjectId(loggedInUser._id),
+      });
+
+      myAccounts.push(newAccount); // FIXED
+    }
+
+    // If exactly one account exists, set as Primary
     if (myAccounts.length === 1) {
       if (myAccounts[0].accountPriority !== "Primary") {
         myAccounts[0].accountPriority = "Primary";
@@ -62,8 +91,7 @@ const myAccounts = async (req, res) => {
 
     return res.status(200).json(myAccounts);
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: error.message });
   }
 };
 
@@ -83,7 +111,6 @@ const MyAccount = async (req, res) => {
 const setAccountPrimary = async (req, res) => {
   const userId = req.user?._id;
   const { accountId } = req.params;
-  const myAccounts = await Account.find({ createdBy: userId });
   const accountToBeSetPrimary = await Account.findOne({ _id: accountId });
 
   try {
@@ -112,7 +139,6 @@ const deleteAccount = async (req, res) => {
     _id: deleteAccountId,
   });
   const Accounts = await Account.find({ createdBy: userId });
-  // console.log(Accounts)
 
   try {
     if (Accounts.length === 1) {

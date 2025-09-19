@@ -28,7 +28,7 @@ const RewardCoinWithdraw = async (req, res) => {
     createdBy: userId,
   });
   const userRewardAccountBalance = userRewardAccount?.coinBalance;
-  const userAccount = await Account.findOne({ createdBy: userId });
+  const userAccount = await Account.findOne({ createdBy: userId, accountPriority:"Primary" });
 
   try {
     if (!coinAmount) {

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
 import axios from "axios";
 import {
   FaMoneyBillWave,
@@ -10,9 +9,7 @@ import {
 } from "react-icons/fa";
 import "./NotificationsPage.css";
 
-const socket = io("http://localhost:5001", {
-  withCredentials: true,
-});
+
 
 const NotificationsPage = () => {
   const [notifications, setNotifications] = useState([]);
@@ -20,7 +17,6 @@ const NotificationsPage = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user._id;
 
-  // ✅ Fetch stored notifications from backend
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
@@ -38,16 +34,7 @@ const NotificationsPage = () => {
   };
 
   useEffect(() => {
-    fetchNotifications();
-
-    socket.on("notification", (data) => {
-      console.log("📢 New notification:", data);
-      setNotifications((prev) => [data, ...prev]); 
-    });
-
-    return () => {
-      socket.off("notification"); 
-    };
+    fetchNotifications(); 
   }, [userId]);
 
   const typeMap = {
@@ -66,11 +53,11 @@ const NotificationsPage = () => {
       <div className="notification-page-header df">My Notifications</div>
 
       {notifications.length === 0 ? (
-        <div className="no-notifications df">No notifications yet!</div>
+        <div className="no-notifications df">No New notifications </div>
       ) : (
         <ul className="notification-container">
           {notifications?.map?.((note, index) => {
-            const { icon, label } = typeMap[note.type] || typeMap.alert; // fallback
+            const { icon, label } = typeMap[note.type] || typeMap.alert;  
             return (
               <li key={index} className="notification-tile">
                 <div className="notification-icon">{icon}</div>

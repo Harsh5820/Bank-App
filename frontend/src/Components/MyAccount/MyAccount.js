@@ -9,7 +9,7 @@ const MyAccount = () => {
   const [accountsArray, setAccountsArray] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [minDelete, setMinDelete] = useState("");
-  const [toggleBalanceDisplay, setToggleBalanceDisplay] = useState(false);
+  const [visibleBalanceId, setVisibleBalanceId] = useState(null);
 
   const fetchAccounts = async () => {
     try {
@@ -63,7 +63,6 @@ const MyAccount = () => {
         setSuccessMessage("");
       }, 3000);
     } catch (error) {
-      // console.log("error from delete", error.response.data.error);
       setMinDelete(error.response.data.error);
       setTimeout(() => {
         setMinDelete("");
@@ -93,14 +92,28 @@ const MyAccount = () => {
                 <div className="myaccount-balance">
                   Account Balance:
                   <span className="myaccount-balance-display">
+                    {visibleBalanceId === item._id ? item.accountBalance : ""}
+                  </span>
+                  {/* <span className="myaccount-balance-display">
                     {toggleBalanceDisplay ? item.accountBalance : ""}
                   </span>
                   <div
                     className="balance-toggle-btn"
                     onClick={() => setToggleBalanceDisplay((prev) => !prev)}
                   >
-                    {/* {toggleBalanceDisplay ? <FaEyeSlash /> : <FaEye />} */}
                     {toggleBalanceDisplay ? "Hide Balance" : "Show Balance"}
+                  </div> */}
+                  <div
+                    className="balance-toggle-btn"
+                    onClick={() =>
+                      setVisibleBalanceId(
+                        visibleBalanceId === item._id ? null : item._id
+                      )
+                    }
+                  >
+                    {visibleBalanceId === item._id
+                      ? "Hide Balance"
+                      : "Show Balance"}
                   </div>
                 </div>
                 <div className="myaccount-primary-section">

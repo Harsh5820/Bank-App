@@ -18,6 +18,7 @@ const userSignUp = async (req, res) => {
       !userPassword ||
       !userPhoneNumber ||
       !userName ||
+      !userDob ||
       !userConfirmPassword
     ) {
       return res.status(400).json({ error: "All fields are mandatory" });
@@ -27,7 +28,7 @@ const userSignUp = async (req, res) => {
       return res.status(400).json({ error: "Email format incorrect" });
     }
 
-    if (userPhoneNumber.length !== 10) {
+    if (String(userPhoneNumber).length !== 10) {
       return res
         .status(400)
         .json({ error: "Phone Number should be exactly 10 digits" });
@@ -76,7 +77,7 @@ const userSignUp = async (req, res) => {
 
     const token = await jwt.sign(
       { _id: newUser._id, userEmail },
-      process.env.SECRET_KEY,{expiresIn: "60m"}
+      process.env.SECRET_KEY
     );
 
     return res.status(200).json({ user: newUser, token });
@@ -87,6 +88,7 @@ const userSignUp = async (req, res) => {
 
 const userLogin = async (req, res) => {
   const { userEmail, userPassword } = req.body;
+
   try {
     if (!userEmail || !userPassword) {
       res.status(400).json({ error: "All fields are mandatory !" });
@@ -95,7 +97,9 @@ const userLogin = async (req, res) => {
     if (!isValidEmail) {
       return res.status(400).json({ error: "Email format incorrect" });
     }
-    const user = await User.findOne({ userEmail }).select("-createdAt");
+    const user = await User.findOne({ userEmail }).select(
+      "-createdAt +userPassword"
+    );
     if (!user) {
       return res.status(400).json({ error: "User does not exist !!" });
     }
@@ -118,9 +122,8 @@ const userLogin = async (req, res) => {
     }
     const token = await jwt.sign(
       { _id: user._id, userEmail, userRole: user.userRole },
-      process.env.SECRET_KEY,{expiresIn: "60m"}
+      process.env.SECRET_KEY
     );
-
     res.status(200).json({ token, user });
   } catch (error) {
     return res.status(400).json(error);
@@ -144,9 +147,17 @@ const getUser = async (req, res) => {
 const editUser = async (req, res) => {
   const { userEmail, userName, userPhoneNumber, userDob } = req.body;
   const userId = req.params.id;
+  const loggedInUserId = req.user._id;
   try {
     if (!userEmail || !userName || !userPhoneNumber || !userDob) {
       return res.status(400).json({ error: "All fields are mandatory !!!" });
+    }
+    if (userId !== loggedInUserId) {
+      return res.status(400).json({ error: "Unauthorized Edit" });
+    }
+    const user = await User.findOne({ _id: userId });
+    if (!user) {
+      return res.status(400).json({ error: "User Not Found" });
     }
 
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userEmail);
@@ -184,10 +195,6 @@ const editUser = async (req, res) => {
     };
 
     const formattedUserName = capitalizeName(userName);
-    const user = await User.findOne({ _id: userId });
-    if (!user) {
-      return res.status(400).json({ error: "User Not Found" });
-    }
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
