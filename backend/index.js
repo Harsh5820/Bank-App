@@ -37,13 +37,13 @@ async function ensureDbConnection(req, res, next) {
 app.use(ensureDbConnection);
 
 // ✅ Routes
-app.use("/user", require("../Routes/userRoutes"));
-app.use("/account", require("../Routes/accountRoutes"));
-app.use("/transaction", require("../Routes/transactionRoutes"));
-app.use("/banner", require("../Routes/bannerRoutes"));
-app.use("/reward", require("../Routes/RewardCoinAccountRoutes"));
-app.use("/beneficiary", require("../Routes/BeneficiaryRoutes"));
-app.use("/notifications", require("../Routes/NotificationRoutes"));
+app.use("/user", require("./Routes/userRoutes"));
+app.use("/account", require("./Routes/accountRoutes"));
+app.use("/transaction", require("./Routes/transactionRoutes"));
+app.use("/banner", require("./Routes/bannerRoutes"));
+app.use("/reward", require("./Routes/RewardCoinAccountRoutes"));
+app.use("/beneficiary", require("./Routes/BeneficiaryRoutes"));
+app.use("/notifications", require("./Routes/NotificationRoutes"));
 
 // ❌ DO NOT use app.listen()
 
