@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 const ApproveUser = () => {
   const { id } = useParams();
   const token = localStorage.getItem("token");
+
   const [userInfo, setUserInfo] = useState(null);
   const [currentError, setCurrentError] = useState("");
   const [approvalData, setApprovalData] = useState({
@@ -15,22 +16,29 @@ const ApproveUser = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const getUser = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(
-        `http://localhost:5001/user/getuserbyid/${id}`,
-        { headers: { Authorization: token } }
-      );
-      setUserInfo(response.data);
-    } catch (error) {
-      setCurrentError("Failed to fetch user");
-    } finally {
-      setLoading(false);
+  // ✅ Fetch user inside useEffect (fixed)
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `http://localhost:5001/user/getuserbyid/${id}`,
+          { headers: { Authorization: token } }
+        );
+        setUserInfo(response.data);
+      } catch (error) {
+        setCurrentError("Failed to fetch user");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id && token) {
+      fetchUser();
     }
-  };
+  }, [id, token]);
 
   const handleOnChange = (e) => {
     setCurrentError("");
@@ -50,16 +58,12 @@ const ApproveUser = () => {
       );
 
       setSuccessMessage("User approved successfully!");
-      setTimeout(() => Navigate("/"), 1500);
+      setTimeout(() => navigate("/"), 1500);
     } catch (error) {
       const msg = error.response?.data?.error || "Approval failed. Try again.";
       setCurrentError(msg);
     }
   };
-
-  useEffect(() => {
-    getUser();
-  }, []);
 
   const isFormValid = approvalData.userRole && approvalData.userStatus;
 
@@ -68,23 +72,31 @@ const ApproveUser = () => {
   return (
     <div className="approve-user-page">
       <div className="approve-user-header df">User Information</div>
+
       <div className="approve-user-user-info-container">
         <div className="user-info-tile df">
           <div className="user-info-title">Name:</div>
           <div className="user-info-desc">{userInfo?.userName}</div>
         </div>
+
         <div className="user-info-tile df">
           <div className="user-info-title">Email:</div>
           <div className="user-info-desc">{userInfo?.userEmail}</div>
         </div>
+
         <div className="user-info-tile df">
           <div className="user-info-title">Phone Number:</div>
-          <div className="user-info-desc">{userInfo?.userPhoneNumber}</div>
+          <div className="user-info-desc">
+            {userInfo?.userPhoneNumber}
+          </div>
         </div>
+
         <div className="user-info-tile df">
           <div className="user-info-title">Date of Birth:</div>
           <div className="user-info-desc">
-            {new Date(userInfo?.userDob).toLocaleDateString("en-GB")}
+            {userInfo?.userDob
+              ? new Date(userInfo.userDob).toLocaleDateString("en-GB")
+              : ""}
           </div>
         </div>
       </div>
@@ -108,6 +120,7 @@ const ApproveUser = () => {
           </select>
 
           <div className="approve-user-error df">{currentError}</div>
+
           <button
             type="submit"
             className="approve-user-btn"

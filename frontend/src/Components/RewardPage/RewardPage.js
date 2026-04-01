@@ -95,6 +95,7 @@ const RewardPage = () => {
           </button>
         </form>
       </div>
+      
     </>
   );
 };
