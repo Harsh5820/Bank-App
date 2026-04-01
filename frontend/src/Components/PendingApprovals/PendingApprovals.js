@@ -7,22 +7,6 @@ const PendingApprovals = () => {
   const token = localStorage.getItem("token");
   const [pendingUsersArray, setPendingUsersArray] = useState([]);
 
-  const fetchPendingApprovals = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:5001/user/userstoapprove",
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      setPendingUsersArray(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const getTimeAgo = (date) => {
     const diff = Date.now() - new Date(date).getTime();
     const seconds = Math.floor(diff / 1000);
@@ -37,8 +21,23 @@ const PendingApprovals = () => {
   };
 
   useEffect(() => {
+    const fetchPendingApprovals = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5001/user/userstoapprove",
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        setPendingUsersArray(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchPendingApprovals();
-  }, [fetchPendingApprovals]);
+  }, [token]);
   return (
     <>
       <div className="pending-approval">

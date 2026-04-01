@@ -9,18 +9,6 @@ const Profile = () => {
   const [userDataArray, setUserdataArray] = useState([]);
   const Navigate = useNavigate();
 
-  const fetchUser = async () => {
-    try {
-      const response = await axios.get("http://localhost:5001/user/getuser", {
-        headers: {
-          Authorization: token,
-        },
-      });
-      setUserdataArray(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleAccountAndUserDelete = async () => {
     try {
@@ -50,8 +38,20 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("http://localhost:5001/user/getuser", {  
+          headers: {
+            Authorization: token,
+          },
+        });
+        setUserdataArray(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchUser();
-  }, [fetchUser]);
+  }, [token]);
 
   return (
     <div className="profile-page">

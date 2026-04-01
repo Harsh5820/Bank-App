@@ -11,22 +11,6 @@ const Pay = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [transactionData, setTransactionData] = useState({});
 
-  const fetchAccounts = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:5001/account/myaccounts",
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      setAccountsArray(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleOnChange = (e) => {
     setTransactionData((prev) => ({
       ...prev,
@@ -59,8 +43,23 @@ const Pay = () => {
   };
 
   useEffect(() => {
+    const fetchAccounts = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5001/account/myaccounts",
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        setAccountsArray(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchAccounts();
-  }, [fetchAccounts]);
+  }, [token]);
 
   return (
     <div className="pay-page">

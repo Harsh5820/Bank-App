@@ -10,22 +10,6 @@ const RewardPage = () => {
   const [coinBalance, setCointBalance] = useState([]);
   const Navigate = useNavigate();
 
-  const myRewardCoinAccount = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:5001/reward/myrewardcoinaccount",
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      setMyRewardAccount(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const toggleFormOpen = () => {
     setFormOpen((prev) => !prev);
   };
@@ -51,8 +35,23 @@ const RewardPage = () => {
   };
 
   useEffect(() => {
+    const myRewardCoinAccount = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5001/reward/myrewardcoinaccount",
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        setMyRewardAccount(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     myRewardCoinAccount();
-  }, [myRewardCoinAccount]);
+  }, [token]);
 
   return (
     <>
@@ -95,7 +94,7 @@ const RewardPage = () => {
           </button>
         </form>
       </div>
-      
+
     </>
   );
 };
