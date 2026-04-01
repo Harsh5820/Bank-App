@@ -1,17 +1,14 @@
-import express from "express";
-import connectDb from "../Config/ConnectDb.js";
-import dotenv from "dotenv";
-import cors from "cors";
-
-// Load env
-dotenv.config();
+const express = require("express");
+const connectDb = require("../Config/ConnectDb");
+require("dotenv").config();
+const cors = require("cors");
 
 const app = express();
 
 // ✅ CORS
 app.use(
   cors({
-    origin: "*",
+    origin: "*", // change to frontend URL later
     credentials: true,
   })
 );
@@ -36,27 +33,19 @@ async function ensureDbConnection(req, res, next) {
   }
 }
 
-// Apply before routes
+// ✅ IMPORTANT: Apply BEFORE routes
 app.use(ensureDbConnection);
 
-// ✅ Routes (IMPORTANT: add .js extension)
-import userRoutes from "../Routes/userRoutes.js";
-import accountRoutes from "../Routes/accountRoutes.js";
-import transactionRoutes from "../Routes/transactionRoutes.js";
-import bannerRoutes from "../Routes/bannerRoutes.js";
-import rewardRoutes from "../Routes/RewardCoinAccountRoutes.js";
-import beneficiaryRoutes from "../Routes/BeneficiaryRoutes.js";
-import notificationRoutes from "../Routes/NotificationRoutes.js";
+// ✅ Routes
+app.use("/user", require("../Routes/userRoutes"));
+app.use("/account", require("../Routes/accountRoutes"));
+app.use("/transaction", require("../Routes/transactionRoutes"));
+app.use("/banner", require("../Routes/bannerRoutes"));
+app.use("/reward", require("../Routes/RewardCoinAccountRoutes"));
+app.use("/beneficiary", require("../Routes/BeneficiaryRoutes"));
+app.use("/notifications", require("../Routes/NotificationRoutes"));
 
-app.use("/user", userRoutes);
-app.use("/account", accountRoutes);
-app.use("/transaction", transactionRoutes);
-app.use("/banner", bannerRoutes);
-app.use("/reward", rewardRoutes);
-app.use("/beneficiary", beneficiaryRoutes);
-app.use("/notifications", notificationRoutes);
+// ❌ DO NOT use app.listen()
 
-// ❌ NO app.listen()
-
-// ✅ Export default
-export default app;
+// ✅ Export for Vercel
+module.exports = app;
