@@ -38,7 +38,7 @@ const PendingApprovals = () => {
 
   useEffect(() => {
     fetchPendingApprovals();
-  }, []);
+  }, [fetchPendingApprovals]);
   return (
     <>
       <div className="pending-approval">

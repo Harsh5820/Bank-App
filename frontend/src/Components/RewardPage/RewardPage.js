@@ -52,7 +52,7 @@ const RewardPage = () => {
 
   useEffect(() => {
     myRewardCoinAccount();
-  }, []);
+  }, [myRewardCoinAccount]);
 
   return (
     <>

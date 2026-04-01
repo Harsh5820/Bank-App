@@ -60,7 +60,7 @@ const Pay = () => {
 
   useEffect(() => {
     fetchAccounts();
-  }, []);
+  }, [fetchAccounts]);
 
   return (
     <div className="pay-page">
