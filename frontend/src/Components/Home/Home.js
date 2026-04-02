@@ -7,7 +7,6 @@ const Home = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const [bannerArray, setBannerArray] = useState([]);
   const [selectedRandomUrl, setSelectedRandomUrl] = useState("");
 
   useEffect(() => {
@@ -20,7 +19,6 @@ const Home = () => {
         );
 
         const allBanners = response?.data?.allBanners || [];
-        setBannerArray(allBanners);
 
         if (allBanners.length > 0) {
           const randomIndex = Math.floor(

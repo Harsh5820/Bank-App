@@ -17,25 +17,24 @@ const NotificationsPage = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user._id;
 
-  const fetchNotifications = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5001/notifications/my/${userId}`,
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      setNotifications(response.data || []);
-    } catch (error) {
-      console.error("❌ Error fetching notifications:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5001/notifications/my/${userId}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        setNotifications(response.data || []);
+      } catch (error) {
+        console.error("❌ Error fetching notifications:", error);
+      }
+    };
     fetchNotifications(); 
-  }, [userId]);
+  }, [userId, token]);
 
   const typeMap = {
     transaction: {

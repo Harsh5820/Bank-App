@@ -14,27 +14,6 @@ const MyTransactions = () => {
   const [filter, setFilter] = useState("allTransactions");
   const [sort, setSort] = useState("");
 
-  const fetchAccounts = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:5001/account/myaccounts",
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      setAccountsArray(response.data);
-    } catch (error) {
-      console.log(error);
-      setCurrentError(error?.response?.data?.error);
-
-      setTimeout(() => {
-        setCurrentError("");
-      }, 1500);
-    }
-  };
-
   const myTransactions = async (e) => {
     e.preventDefault();
     try {
@@ -87,8 +66,28 @@ const MyTransactions = () => {
   };
 
   useEffect(() => {
-    fetchAccounts();
-  }, []);
+    const fetchAccountsOnMount = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5001/account/myaccounts",
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        setAccountsArray(response.data);
+      } catch (error) {
+        console.log(error);
+        setCurrentError(error?.response?.data?.error);
+
+        setTimeout(() => {
+          setCurrentError("");
+        }, 1500);
+      }
+    };
+    fetchAccountsOnMount();
+  }, [token]);
 
   return (
     <div className="mytransactions-page">
@@ -212,7 +211,7 @@ const MyTransactions = () => {
                 <div className="mytransaction-colon">:</div>
                 <div
                   className={`mytransaction-transaction-amount ${
-                    item.recieverAccountNumber == selectedAccount
+                    item.recieverAccountNumber === selectedAccount
                       ? "font-green"
                       : "font-red"
                   }

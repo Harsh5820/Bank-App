@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./MyAccount.css";
 import axios from "axios";
 import { MdDeleteOutline } from "react-icons/md";
@@ -11,7 +11,7 @@ const MyAccount = () => {
   const [minDelete, setMinDelete] = useState("");
   const [visibleBalanceId, setVisibleBalanceId] = useState(null);
 
-  const fetchAccounts = async () => {
+  const fetchAccounts = useCallback(async () => {
     try {
       const response = await axios.get(
         "http://localhost:5001/account/myaccounts",
@@ -25,7 +25,7 @@ const MyAccount = () => {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [token]);
 
   const setAccountPrimary = async (id) => {
     try {
@@ -72,7 +72,7 @@ const MyAccount = () => {
 
   useEffect(() => {
     fetchAccounts();
-  }, []);
+  }, [fetchAccounts]);
 
   return (
     <div className="myaccount">
